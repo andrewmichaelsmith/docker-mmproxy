@@ -15,5 +15,6 @@ jobs:
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       run: |
         docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD docker.pkg.github.com
-        docker build . --file Dockerfile --tag docker.pkg.github.com/andrewmichaelsmith/mmproxy/mmproxy:latest .
+        docker build --file Dockerfile --tag docker.pkg.github.com/andrewmichaelsmith/mmproxy/mmproxy:latest .
         docker push docker.pkg.github.com/andrewmichaelsmith/mmproxy/mmproxy:latest
+
