@@ -26,7 +26,7 @@ jobs:
 
         docker build --file Dockerfile.arm32v7 --tag docker.pkg.github.com/andrewmichaelsmith/mmproxy/mmproxy:latest .
 
-        docker push docker.pkg.github.com/andrewmichaelsmith/mmproxy/mmproxy:latest
+        docker push arm32v7/docker.pkg.github.com/andrewmichaelsmith/mmproxy/mmproxy:latest
         docker tag docker.pkg.github.com/andrewmichaelsmith/mmproxy/mmproxy:latest docker.pkg.github.com/andrewmichaelsmith/mmproxy/mmproxy:$IMAGE_VERSION
         docker push docker.pkg.github.com/andrewmichaelsmith/mmproxy/mmproxy:$IMAGE_VERSION
 
