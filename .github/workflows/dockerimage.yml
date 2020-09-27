@@ -13,7 +13,25 @@ jobs:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       run: |
+        IMAGE_VERSION=$GITHUB_RUN_NUMBER
         docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD docker.pkg.github.com
         docker build --file Dockerfile --tag docker.pkg.github.com/andrewmichaelsmith/mmproxy/mmproxy:latest .
         docker push docker.pkg.github.com/andrewmichaelsmith/mmproxy/mmproxy:latest
+        docker tag docker.pkg.github.com/andrewmichaelsmith/mmproxy/mmproxy:latest docker.pkg.github.com/andrewmichaelsmith/mmproxy/mmproxy:$IMAGE_VERSION
+        docker push docker.pkg.github.com/andrewmichaelsmith/mmproxy/mmproxy:$IMAGE_VERSION
+
+        # arm
+        sudo apt-get update && sudo apt-get install qemu binfmt-support qemu-user-static
+        docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+
+        docker build --file Dockerfile --tag docker.pkg.github.com/andrewmichaelsmith/mmproxy/mmproxy:latest .
+        docker push docker.pkg.github.com/andrewmichaelsmith/mmproxy/mmproxy:latest
+        docker tag docker.pkg.github.com/andrewmichaelsmith/mmproxy/mmproxy:latest docker.pkg.github.com/andrewmichaelsmith/mmproxy/mmproxy:$IMAGE_VERSION
+        docker push docker.pkg.github.com/andrewmichaelsmith/mmproxy/mmproxy:$IMAGE_VERSION
+
+
+
+
+
+
 
