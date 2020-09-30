@@ -7,7 +7,23 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - 
+      name: Checkout
+      uses: actions/checkout@v1
+    - 
+      name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+      with:
+        platforms: all
+    -
+      name: Set up Docker Buildx
+      id: buildx
+      uses: docker/setup-buildx-action@v1
+      with:
+        version: latest
+    -
+      name: Available platforms
+      run: echo ${{ steps.buildx.outputs.platforms }}
     - name: Build the Docker image
       env: # Or as an environment variable
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
@@ -15,24 +31,4 @@ jobs:
       run: |
         IMAGE_VERSION=$GITHUB_RUN_NUMBER
         docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD docker.pkg.github.com
-        docker build --file Dockerfile --tag docker.pkg.github.com/andrewmichaelsmith/mmproxy/mmproxy:latest .
-        docker push docker.pkg.github.com/andrewmichaelsmith/mmproxy/mmproxy:latest
-        docker tag docker.pkg.github.com/andrewmichaelsmith/mmproxy/mmproxy:latest docker.pkg.github.com/andrewmichaelsmith/mmproxy/mmproxy:$IMAGE_VERSION
-        docker push docker.pkg.github.com/andrewmichaelsmith/mmproxy/mmproxy:$IMAGE_VERSION
-
-        # arm
-        sudo apt-get update && sudo apt-get install qemu binfmt-support qemu-user-static
-        docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-
-        docker build --file Dockerfile.arm32v7 --tag docker.pkg.github.com/andrewmichaelsmith/mmproxy/mmproxy:latest .
-
-        docker push arm32v7/docker.pkg.github.com/andrewmichaelsmith/mmproxy/mmproxy:latest
-        docker tag docker.pkg.github.com/andrewmichaelsmith/mmproxy/mmproxy:latest docker.pkg.github.com/andrewmichaelsmith/mmproxy/mmproxy:$IMAGE_VERSION
-        docker push docker.pkg.github.com/andrewmichaelsmith/mmproxy/mmproxy:$IMAGE_VERSION
-
-
-
-
-
-
-
+        docker buildx build --platform linux/amd64,linux/arm64 -t docker.pkg.github.com/andrewmichaelsmith/mmproxy/mmproxy:$IMAGE_VERSION --output type=registry .
