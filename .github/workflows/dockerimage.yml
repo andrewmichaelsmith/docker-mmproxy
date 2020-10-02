@@ -31,4 +31,4 @@ jobs:
       run: |
         IMAGE_VERSION=$GITHUB_RUN_NUMBER
         docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD docker.pkg.github.com
-        docker buildx build --platform linux/amd64,linux/arm64 -t docker.pkg.github.com/andrewmichaelsmith/mmproxy/mmproxy:$IMAGE_VERSION --output type=registry .
+        docker buildx build --squash --platform linux/amd64,linux/arm64 -t docker.pkg.github.com/andrewmichaelsmith/mmproxy/mmproxy:$IMAGE_VERSION --output type=registry .
